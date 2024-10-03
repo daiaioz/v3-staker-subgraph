@@ -19,7 +19,7 @@ export function handleIncentiveCreated(event: IncentiveCreated): void {
     ethereum.Value.fromAddress(event.params.refundee),
   ];
   let incentiveIdEncoded = ethereum.encode(
-    ethereum.Value.fromTuple(incentiveIdTuple as ethereum.Tuple)
+    ethereum.Value.fromTuple(changetype<ethereum.Tuple>(incentiveIdTuple))
   )!;
   let incentiveId = crypto.keccak256(incentiveIdEncoded);
 
@@ -51,9 +51,21 @@ export function handleIncentiveEnded(event: IncentiveEnded): void {
 export function handleRewardClaimed(event: RewardClaimed): void {
 
   let owner = OwnerStaker.load(event.params.to.toHex() + event.address.toHex());
-  let incentivePosition = IncentivePosition.load(owner.lastUnstakedIncentivePosition);
+  if (!owner) {
+    return
+  }
+
   if (owner.lastUnstakedIncentivePosition) {
+    let incentivePosition = IncentivePosition.load(owner.lastUnstakedIncentivePosition as string);
+    if (!incentivePosition) {
+      return
+    }
+
     let incentive = Incentive.load(incentivePosition.incentive);
+    if (!incentive) {
+      return
+    }
+
     let claim = new Claim(event.transaction.hash.toHex() + "#" + event.logIndex.toHex());
     claim.txHash = event.transaction.hash;
     claim.timestamp = event.block.timestamp;
@@ -61,6 +73,7 @@ export function handleRewardClaimed(event: RewardClaimed): void {
     claim.position = incentivePosition.position;
     claim.amount = event.params.reward;
     claim.rewardToken = incentive.rewardToken;
+    claim.incentive = incentive.id;
     claim.save();
 
     incentivePosition.claimed = incentivePosition.claimed.plus(event.params.reward);
@@ -87,6 +100,7 @@ export function handleTokenStaked(event: TokenStaked): void {
   stake.timestamp = event.block.timestamp;
   stake.position = position.id;
   stake.blockNumber = event.block.number;
+  stake.incentive = event.params.incentiveId.toHex()
   stake.save();
 
   let incentivePosition = IncentivePosition.load(event.params.incentiveId.toHex() + "#" + event.params.tokenId.toString());
@@ -103,12 +117,16 @@ export function handleTokenUnstaked(event: TokenUnstaked): void {
 
   // IncentivePosition add collect amount
   let position = Position.load(event.params.tokenId.toString());
+  if (!position) {
+    return
+  }
 
   let unstake = new Unstake(event.transaction.hash.toHex() + "#" + event.logIndex.toHex());
   unstake.txHash = event.transaction.hash;
   unstake.timestamp = event.block.timestamp;
   unstake.position = position.id;
   unstake.blockNumber = event.block.number;
+  unstake.incentive = event.params.incentiveId.toHex()
   unstake.save();
 
   let owner = OwnerStaker.load(position.owner.toHex() + event.address.toHex());

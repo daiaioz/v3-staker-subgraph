@@ -1,0 +1,12 @@
+{
+    "aioz-testnet": {
+        "NFTPositionsManager": {
+            "address": "0xa667254705578f0131f299E646BA5354c13c5872",
+            "startBlock": 13043180
+        },
+        "UniV3Staker": {
+            "address": "0x23A05e25B7CD3aF612495147280195A7b252124a",
+            "startBlock": 13043185
+        }
+    }
+}

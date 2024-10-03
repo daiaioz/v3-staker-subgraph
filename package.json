@@ -2,15 +2,13 @@
   "name": "uniswap-v3-staker-subgraph",
   "license": "MIT",
   "scripts": {
-    "codegen:mainnet": "graph codegen -- subgraph-mainnet.yaml",
-    "build:mainnet": "graph build -- subgraph-mainnet.yaml",
-    "deploy:mainnet": "graph deploy --product hosted-service revert-finance/uni-v3-staker-mainnet subgraph-mainnet.yaml",
-    "codegen:polygon": "graph codegen -- subgraph-polygon.yaml",
-    "build:polygon": "graph build -- subgraph-polygon.yaml",
-    "deploy:polygon": "graph deploy --product hosted-service revert-finance/uni-v3-staker-polygon subgraph-polygon.yaml"
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "testnet:create": "graph create aioz/v3-staker-subgraph-revert --node http://68.183.189.51:8020",
+    "testnet:deploy": "graph deploy aioz/v3-staker-subgraph-revert --node http://68.183.189.51:8020 --ipfs http://68.183.189.51:5001"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.21.1",
-    "@graphprotocol/graph-ts": "0.20.1"
+    "@graphprotocol/graph-cli": "^0.78.0",
+    "@graphprotocol/graph-ts": "^0.35.1"
   }
 }

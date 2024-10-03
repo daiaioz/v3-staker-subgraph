@@ -1,17 +1,17 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: UniV3Staker1.0.2
-    network: matic
+    name: UniV3Staker
+    network: aioz-testnet
     source:
-      address: '0xe34139463bA50bD61336E0c446Bd8C0867c6fE65'
       abi: UniV3Staker
-      startBlock: 22760705
+      address: "0x23A05e25B7CD3aF612495147280195A7b252124a"
+      startBlock: 13043185
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Incentive
@@ -26,7 +26,8 @@ dataSources:
         - name: UniV3Staker
           file: ./abis/UniV3Staker.json
       eventHandlers:
-        - event: IncentiveCreated(indexed address,indexed address,uint256,uint256,address,uint256)
+        - event: IncentiveCreated(indexed address,indexed
+            address,uint256,uint256,address,uint256)
           handler: handleIncentiveCreated
         - event: IncentiveEnded(indexed bytes32,uint256)
           handler: handleIncentiveEnded
